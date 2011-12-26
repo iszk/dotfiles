@@ -1,0 +1,24 @@
+set hosts = ( `perl -ne 'if (/^(.+),/){print "$1\n";}' ~/.ssh/known_hosts` ) 
+
+set color
+set autolist
+unset autologout
+
+if( $?TERM )then
+    switch( $TERM )
+    case xterm:
+    case kterm:
+    case dtterm:
+        alias precmd 'printf "\033]1;${HOST}\007"'
+    endsw
+endif
+
+set prompt='%{\033]0;%m:%~\007%}%n@%{\033[31m%m\033[00m%}:%/%# '
+
+
+complete cd  'p/1/d/'
+complete ssh        'p/1/$hosts/' 'c/-/"(l n)"/'   'n/-l/u/' 'N/-l/c/' 'n/-/c/' 'p/2/c/' 'p/*/f/'
+complete scp        'p/1/f/' 'p/2/$hosts/:' 'c/-/"(l n)"/' 'n/-l/u/' 'N/-l/c/' 'n/-/c/'
+
+alias china-login='telnet 172.31.6.2'
+
