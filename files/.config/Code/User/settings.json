@@ -1,0 +1,43 @@
+{
+    "workbench.colorTheme": "Default Light+",
+
+    "editor.renderWhitespace": "all",
+
+
+    // 任意の表示グループが開かれた場合に、そこにエディターを表示するかどうかを制御します。無効にした場合、エディターは現在のアクティブなエディター グループに優先して開かれます。有効にした場合は、現在のアクティブなエディター グループにもう一度開くのではなく、既に開いているエディターが表示されます。特定のグループ内や現在アクティブなグループの横に強制的にエディターを開いた場合などに、この設定が無視される場合もあることにご注意ください。
+    "workbench.editor.revealIfOpen": true,
+
+    // 入力時にパラメーター ドキュメントと型情報を表示するポップアップを有効にします。
+    "editor.parameterHints.enabled": false,
+    // 保存時に自動的に末尾空白を削除
+    // "files.trimTrailingWhitespace": true,
+
+    // font
+    "editor.fontFamily": "'HackGen Console', 'Ricty Diminished', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+
+
+    "indentRainbow.colors": [
+        "rgba(128,128,128,0.04)",
+        "rgba(  0,128,  0,0.04)",
+        "rgba(128,  0,128,0.04)",
+        "rgba(  0,128,128,0.04)"
+    ],
+    "extensions.ignoreRecommendations": false,
+    "breadcrumbs.enabled": true,
+    "window.zoomLevel": 0,
+    "files.insertFinalNewline": true,
+
+    // goenv とか使ってるとgoroot指定しないとちゃんと動かないっぽい？
+    "go.goroot": "${env:HOME}/.goenv/versions/1.11.4",
+    // Use gotype on the file currently being edited and report any semantic or syntactic errors found after configured delay.
+    "go.liveErrors": {
+        "enabled": false,
+        "delay": 500
+    },
+    "go.buildOnSave": "package",
+    "go.testTimeout": "600s",
+
+    "go.testEnvVars": {
+        "TZ": "Asia/Tokyo",
+    }
+}
