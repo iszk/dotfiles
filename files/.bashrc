@@ -13,7 +13,7 @@ HISTCONTROL=erasedups:ignorespace
 HISTSIZE=1000
 HISTFILESIZE=2000
 ## マッチしたものは保存しない
-HISTIGNORE=cd*:ls*:pwd:history:which*
+HISTIGNORE=cd:ls:pwd:history:which*
 
 # append to the history file, don't overwrite it
 shopt -s histappend
