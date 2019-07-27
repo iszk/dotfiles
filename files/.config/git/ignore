@@ -1,0 +1,11 @@
+# mac
+.DS_Store
+
+# KDE
+.directory
+
+# vscode
+.vscode
+
+# emacs
+*~

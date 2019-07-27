@@ -1,3 +1,27 @@
 [user]
 	name = ishizuka yohsuke
 	email = ishizuka@nemui.jp
+
+[alias]
+    # based on https://qiita.com/hajimeni/items/73d2155fc59e152630c4
+    delete-merged-branch = "!f () {\
+        if [ $# -ge 1 ]; then\
+            git checkout master;\
+        else\
+            git checkout $1;\
+        fi;\
+        git branch --merged | egrep -v '\\*|develop|master' | xargs git branch -d;\
+    };f"
+
+    # co = checkout
+    # checkout peco selectable
+    # based on http://qiita.com/yamagen0915/items/eb8275275fc87935843b
+    co = "!f () {\
+        if [ $# -ge 1 ]; then\
+            git checkout ${@};\
+        elif type 'fzf' > /dev/null 2>&1; then\
+            git branch --sort=authordate | fzf --prompt 'checkout\\> ' | tr -d ' \\*' | xargs -n 1 git checkout;\
+        elif type 'peco' > /dev/null 2>&1; then\
+            git branch --sort=authordate | peco --prompt 'checkout\\> ' | tr -d ' \\*' | xargs -n 1 git checkout;\
+        fi;\
+    };f"
