@@ -11,4 +11,7 @@ echo "start setup from $THIS_DIR"
 find . -mindepth 1 -type d -exec mkdir -p $TARGET_DIR/{} \;
 find . -mindepth 1 -type f -exec ln -snfv $FILES_DIR/{} $TARGET_DIR/{} \;
 
+chmod -R g-rwx $TARGET_DIR/.ssh
+chmod -R o-rwx $TARGET_DIR/.ssh
+
 echo "dotfiles updated."
