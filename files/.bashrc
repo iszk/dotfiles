@@ -6,16 +6,18 @@ case $- in
       *) return;;
 esac
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
+# history settings
+## ignorespace 空白で始まる場合は保存しない
+## erasedups 同じものが来たら過去のものを削除する
+HISTCONTROL=erasedups:ignorespace
+HISTSIZE=1000
+HISTFILESIZE=2000
+## マッチしたものは保存しない
+HISTIGNORE=cd*:ls*:pwd:history:which*
 
 # append to the history file, don't overwrite it
 shopt -s histappend
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -59,17 +61,6 @@ then
     if [ -d "$BREW_SCRIPTS" ]; then for script in $(find $BREW_SCRIPTS -type l) ; do . $script ; done fi
 fi
 
-
-case "${OSTYPE}" in
-darwin*)
-  alias ls="ls -GF"
-  ;;
-linux*)
-  alias ls='ls -F --color=auto'
-  ;;
-esac
-
-
 function prompt_setting {
     case $TERM in
         xterm*) TITLEBAR='\[\e]0;\$ \w@\h\007\]';;
@@ -89,26 +80,38 @@ prompt_setting
 
 
 # go setting
-if type "go" > /dev/null 2>&1
+if type "$HOME/.goenv/bin/goenv" > /dev/null 2>&1
 then
-    export PATH="~/go/bin:$PATH"
+    export GOENV_ROOT="$HOME/.goenv"
+    export PATH="$HOME/go/bin:$GOENV_ROOT/bin:$PATH"
+    eval "$(goenv init -)"
+    export PATH="$GOPATH/bin:$PATH"
 fi
 
 # nodenv setting
-if type "nodenv" > /dev/null 2>&1
+if type "$HOME/.nodenv/bin/nodenv" > /dev/null 2>&1
 then
-    export PATH="~/.nodenv/bin:$PATH"
+    export PATH="$HOME/.nodenv/bin:$PATH"
     eval "$(nodenv init -)"
 fi
 
 # python setting
-if type "pyenv" > /dev/null 2>&1
+if type "$HOME/.pyenv/bin/pyenv" > /dev/null 2>&1
 then
-    export PATH="~/.pyenv/bin:$PATH"
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
     eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
 fi
 
-export PATH="~/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
 
+# fzf settings
+if [ -f ~/.bash_fzf ]; then
+    . ~/.bash_fzf
+fi
+
+# local settings
+if [ -f ~/.bash_local ]; then
+    . ~/.bash_local
+fi
 
