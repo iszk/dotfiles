@@ -1,0 +1,45 @@
+#!/usr/bin/env perl
+
+my $file = $ARGV[0];
+
+my $current_branch = `git branch | grep '*'`;
+chomp($current_branch);
+chomp($current_branch);
+$current_branch =~ s/\*\s+//;
+
+my $current_repos = `git remote -v`;
+# $current_repos =~ /origin\s+.+:([^\/]+\/[^\.\s]+)/;
+if ($current_repos =~ /git\@github\.com:([^\/]+\/[^\.\s]+)\.git/) {
+    $current_repos = $1;
+} elsif ($current_repos =~ /ssh:\/\/git\@github\.com\/([^\/]+\/[^\.\s]+)/) {
+    $current_repos = $1;
+}
+
+my $issueno;
+if ($current_branch =~ /\/(\d+)$/) {
+    $issueno = $1;
+} elsif ($current_branch =~ /^(\d+)\-/) {
+    $issueno = $1;
+}
+
+if (!$ARGV[0]) {
+    print "repository = $current_repos\n";
+    print "branch = $current_branch\n";
+    print "issue no = $issueno\n";
+    exit;
+}
+
+if ($current_repos && $current_branch && $issueno) {
+    my $msg;
+    my $issue_flg = 0;
+    open (my $fh1, "<", $file) or die 'cannot open commit msg file';
+    while (<$fh1>) {
+        $issue_flg = 1 if /\#$issueno\b/;
+        $msg .= $_;
+    }
+    close $fh1;
+    open (my $fh, ">>", $file) or die 'cannot open commit msg file';
+    print $fh "(refs $current_repos/#$issueno) ";
+    print $fh $msg;
+    close $fh;
+}
