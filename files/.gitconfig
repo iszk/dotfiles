@@ -2,6 +2,9 @@
 	name = ishizuka yohsuke
 	email = ishizuka@nemui.jp
 
+[init]
+	templatedir = ~/.config/git/template
+
 [alias]
     # based on https://qiita.com/hajimeni/items/73d2155fc59e152630c4
     delete-merged-branch = "!f () {\
