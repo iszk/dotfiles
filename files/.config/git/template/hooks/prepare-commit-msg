@@ -38,7 +38,7 @@ if ($current_repos && $current_branch && $issueno) {
         $msg .= $_;
     }
     close $fh1;
-    open (my $fh, ">>", $file) or die 'cannot open commit msg file';
+    open (my $fh, ">", $file) or die 'cannot open commit msg file';
     print $fh "(refs $current_repos/#$issueno) ";
     print $fh $msg;
     close $fh;
