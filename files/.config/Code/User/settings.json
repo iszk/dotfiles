@@ -39,5 +39,9 @@
 
     "go.testEnvVars": {
         "TZ": "Asia/Tokyo",
-    }
+    },
+    "files.exclude": {
+        "**/.directory": true
+    },
+    "explorer.confirmDragAndDrop": false
 }
