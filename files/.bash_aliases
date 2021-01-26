@@ -9,4 +9,6 @@ linux*)
   ;;
 esac
 
+# git like diff
+alias diff='diff -u'
 
