@@ -6,6 +6,9 @@
 	templatedir = ~/.config/git/template
 
 [alias]
+    m = "!git switch master; git pull"
+    s = status
+
     # based on https://qiita.com/hajimeni/items/73d2155fc59e152630c4
     delete-merged-branch = "!f () {\
         if [ $# -ge 1 ]; then\
