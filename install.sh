@@ -15,3 +15,6 @@ chmod -R g-rwx $TARGET_DIR/.ssh
 chmod -R o-rwx $TARGET_DIR/.ssh
 
 echo "dotfiles updated."
+
+# awscli
+# https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/install-cliv2-linux.html

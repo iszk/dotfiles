@@ -8,6 +8,8 @@
 [alias]
     m = "!git switch master; git pull"
     s = status
+    sw = switch
+    rs = restore
 
     # based on https://qiita.com/hajimeni/items/73d2155fc59e152630c4
     delete-merged-branch = "!f () {\
@@ -24,10 +26,19 @@
     # based on http://qiita.com/yamagen0915/items/eb8275275fc87935843b
     co = "!f () {\
         if [ $# -ge 1 ]; then\
-            git checkout ${@};\
+            git switch ${@};\
         elif type 'fzf' > /dev/null 2>&1; then\
-            git branch --sort=authordate | fzf --prompt 'checkout\\> ' | tr -d ' \\*' | xargs -n 1 git checkout;\
+            git branch --sort=authordate | fzf --prompt 'switch\\> ' | tr -d ' \\*' | xargs -n 1 git switch;\
         elif type 'peco' > /dev/null 2>&1; then\
-            git branch --sort=authordate | peco --prompt 'checkout\\> ' | tr -d ' \\*' | xargs -n 1 git checkout;\
+            git branch --sort=authordate | peco --prompt 'switch\\> ' | tr -d ' \\*' | xargs -n 1 git switch;\
+        fi;\
+    };f"
+    sw = "!f () {\
+        if [ $# -ge 1 ]; then\
+            git switch ${@};\
+        elif type 'fzf' > /dev/null 2>&1; then\
+            git branch --sort=authordate | fzf --prompt 'switch\\> ' | tr -d ' \\*' | xargs -n 1 git switch;\
+        elif type 'peco' > /dev/null 2>&1; then\
+            git branch --sort=authordate | peco --prompt 'switch\\> ' | tr -d ' \\*' | xargs -n 1 git switch;\
         fi;\
     };f"
