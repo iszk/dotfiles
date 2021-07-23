@@ -80,13 +80,6 @@ prompt_setting
 
 export TZ=Asia/Tokyo
 
-# direnv setting
-if type "direnv" > /dev/null 2>&1
-then
-    eval "$(direnv hook bash)"
-fi
-
-
 # go setting
 if type "$HOME/.goenv/bin/goenv" > /dev/null 2>&1
 then
@@ -122,4 +115,12 @@ fi
 if [ -f ~/.bash_local ]; then
     . ~/.bash_local
 fi
+
+# direnv setting
+if type "direnv" > /dev/null 2>&1
+then
+    eval "$(direnv hook bash)"
+fi
+
+export PERL5LIB=$HOME/perl5/lib/perl5:$PERL5LIB;
 

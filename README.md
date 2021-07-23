@@ -15,3 +15,4 @@ $ .dotfiles/install.sh
 - nodenv https://github.com/nodenv/nodenv
 - ghq https://github.com/motemen/ghq
 - fzf https://github.com/junegunn/fzf
+- direnv https://github.com/direnv/direnv
