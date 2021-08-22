@@ -54,6 +54,18 @@ if ! shopt -oq posix; then
         . /etc/bash_completion
     fi
 fi
+
+# git prompt
+if [ -f ~/.git-prompt.sh ]; then
+    . ~/.git-prompt.sh
+fi
+
+# for homebrew m1 mac
+if type "/opt/homebrew/bin/brew" > /dev/null 2>&1
+then
+    export PATH="/opt/homebrew/bin:$PATH"
+fi
+
 # Homebrew Completions
 if type "brew" > /dev/null 2>&1
 then 
