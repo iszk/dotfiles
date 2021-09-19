@@ -6,7 +6,7 @@
 	templatedir = ~/.config/git/template
 
 [alias]
-    m = "!git switch master; git pull"
+    m = "!git branch | grep main; if [ $? -eq 0 ]; then git switch main; else git switch master; fi; git pull"
     s = status
     sw = switch
     rs = restore
