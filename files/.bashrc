@@ -116,6 +116,32 @@ then
     eval "$(pyenv init -)"
 fi
 
+# asdf
+if type "$HOME/.asdf/bin/asdf" > /dev/null 2>&1
+then
+    . $HOME/.asdf/asdf.sh
+    . $HOME/.asdf/completions/asdf.bash
+fi
+
+# asdf-go
+# 本当は asdf 関係ないけど、 goenv があると競合しちゃうので、 goenv の設定を消し終わるまでは asdf 前提にしておく
+if type "$HOME/.asdf/shims/go" > /dev/null 2>&1
+then
+    export PATH="$(go env GOPATH)/bin:$PATH"
+fi
+
+# asdf-direnv
+if type "$HOME/.asdf/shims/direnv" > /dev/null 2>&1
+then
+    eval "$(asdf exec direnv hook bash)"
+    # A shortcut for asdf managed direnv.
+    direnv() { asdf exec direnv "$@"; }
+elif type "direnv" > /dev/null 2>&1
+then
+    # asdf ではなく direnv が入っている場合
+    eval "$(direnv hook bash)"
+fi
+
 export PATH="$HOME/bin:$PATH"
 
 # fzf settings
@@ -126,12 +152,6 @@ fi
 # local settings
 if [ -f ~/.bash_local ]; then
     . ~/.bash_local
-fi
-
-# direnv setting
-if type "direnv" > /dev/null 2>&1
-then
-    eval "$(direnv hook bash)"
 fi
 
 export PERL5LIB=$HOME/perl5/lib/perl5:$PERL5LIB;
