@@ -92,42 +92,11 @@ prompt_setting
 
 export TZ=Asia/Tokyo
 
-# go setting
-if type "$HOME/.goenv/bin/goenv" > /dev/null 2>&1
-then
-    export GOENV_ROOT="$HOME/.goenv"
-    export PATH="$HOME/go/bin:$GOENV_ROOT/bin:$PATH"
-    eval "$(goenv init -)"
-    export PATH="$GOPATH/bin:$PATH"
-fi
-
-# nodenv setting
-if type "$HOME/.nodenv/bin/nodenv" > /dev/null 2>&1
-then
-    export PATH="$HOME/.nodenv/bin:$PATH"
-    eval "$(nodenv init -)"
-fi
-
-# python setting
-if type "$HOME/.pyenv/bin/pyenv" > /dev/null 2>&1
-then
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init -)"
-fi
-
 # asdf
 if type "$HOME/.asdf/bin/asdf" > /dev/null 2>&1
 then
     . $HOME/.asdf/asdf.sh
     . $HOME/.asdf/completions/asdf.bash
-fi
-
-# asdf-go
-# 本当は asdf 関係ないけど、 goenv があると競合しちゃうので、 goenv の設定を消し終わるまでは asdf 前提にしておく
-if type "$HOME/.asdf/shims/go" > /dev/null 2>&1
-then
-    export PATH="$(go env GOPATH)/bin:$PATH"
 fi
 
 # asdf-direnv
