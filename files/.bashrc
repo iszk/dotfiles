@@ -111,6 +111,12 @@ then
     eval "$(direnv hook bash)"
 fi
 
+# asdf go-sdk
+if type "go" > /dev/null 2>&1
+then
+    export PATH="$(go env GOPATH)/bin:$PATH"
+fi
+
 export PATH="$HOME/bin:$PATH"
 
 # fzf settings
