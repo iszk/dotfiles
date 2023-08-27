@@ -12,3 +12,7 @@ esac
 # git like diff
 alias diff='diff -u'
 
+# use poetry
+alias pr='poetry run'
+alias pp='poetry run python'
+

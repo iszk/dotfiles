@@ -68,7 +68,7 @@ fi
 
 # Homebrew Completions
 if type "brew" > /dev/null 2>&1
-then 
+then
     BREW_SCRIPTS="$(brew --prefix)/etc/bash_completion.d"
     if [ -d "$BREW_SCRIPTS" ]; then for script in $(find $BREW_SCRIPTS -type l) ; do . $script ; done fi
 fi
@@ -129,5 +129,12 @@ if [ -f ~/.bash_local ]; then
     . ~/.bash_local
 fi
 
+export PYTHONPYCACHEPREFIX=~/.pycache
 export PERL5LIB=$HOME/perl5/lib/perl5:$PERL5LIB;
+
+# if wsl
+
+if [ -f /proc/sys/fs/binfmt_misc/WSLInterop ]; then
+    . ~/.bash_wsl
+fi
 
