@@ -1,6 +1,6 @@
 [user]
-	name = ishizuka yohsuke
-	email = ishizuka@nemui.jp
+	name = iszk yoh
+	email = y@nemui.jp
 
 [init]
 	templatedir = ~/.config/git/template
@@ -13,12 +13,7 @@
 
     # based on https://qiita.com/hajimeni/items/73d2155fc59e152630c4
     delete-merged-branch = "!f () {\
-        if [ $# -ge 1 ]; then\
-            git checkout master;\
-        else\
-            git checkout $1;\
-        fi;\
-        git branch --merged | egrep -v '\\*|develop|master' | xargs git branch -d;\
+        git branch --merged | egrep -v '\\*|develop|master|main' | xargs git branch -d;\
     };f"
 
     # co = checkout
