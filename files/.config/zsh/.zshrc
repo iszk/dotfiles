@@ -56,3 +56,15 @@ case "$OSTYPE" in
     ;;
 esac
 
+# asdf-direnv
+source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+
+# 普通の alias
+alias pr='poetry run'
+alias pp='poetry run python'
+
+gq() {
+    local dir
+    dir=$(ghq list | fzf --reverse +m --prompt 'select repository >')
+    cd $(ghq root)/$dir
+}
