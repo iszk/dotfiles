@@ -20,7 +20,6 @@ install-asdf:
 	asdf plugin-add go-sdk
 	asdf plugin-add python
 	asdf plugin-add direnv
-	asdf plugin add perl
 	asdf install nodejs latest
 	asdf install go-sdk latest
 	asdf install python latest

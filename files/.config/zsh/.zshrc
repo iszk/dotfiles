@@ -3,39 +3,27 @@
 ## 個人のスクリプトは XDG 的に ~/.local/bin/ に入れる
 export PATH=$PATH:$HOME/.local/bin
 
-# 補完機能
-ADD_FPATH_DIR=~/.zsh_completion
-if [[ -d $ADD_FPATH_DIR ]]; then
-    # fpath+=($TARGET_DIR)
-    fpath=($ADD_FPATH_DIR  "${fpath[@]}" )
-fi
-autoload -Uz compinit && compinit
-
 # prompt に git 周りの情報を表示するため
 autoload -Uz vcs_info
 precmd_vcs_info() { vcs_info }
 precmd_functions+=( precmd_vcs_info )
 setopt prompt_subst
 zstyle ':vcs_info:git:*' check-for-changes true
-zstyle ':vcs_info:git:*' stagedstr "!"
-zstyle ':vcs_info:git:*' unstagedstr "+"
-zstyle ':vcs_info:*' formats "%F{blue}(%b%c%u)%f"
+zstyle ':vcs_info:git:*' stagedstr "+"
+zstyle ':vcs_info:git:*' unstagedstr "*"
+zstyle ':vcs_info:*' formats "%F{blue}(%b%u%c)%f"
 zstyle ':vcs_info:*' actionformats '[%b|%a]'
 
 # prompt
 PROMPT='%B%F{red}> %f%b%~ '\$vcs_info_msg_0_$'\n''%F{444}%* %n@%m%f %# '
 
-# ls
+# 標準的なコマンドのオプション
 LS_OPTIONS="-hFv --time-style=long-iso --group-directories-first --color=auto"
-alias ls="ls $LS_OPTIONS"
-
-# diff
 DIFF_OPTIONS="-u --color"
-alias diff="diff $DIFF_OPTIONS"
 
-# mac で GNU の各種コマンドが起動するように
 case "$OSTYPE" in
     darwin*)
+        # mac で GNU の各種コマンドが起動するように
         (( ${+commands[gdate]} )) && alias date='gdate'
         (( ${+commands[gls]} )) && alias ls="gls $LS_OPTIONS"
         (( ${+commands[gmkdir]} )) && alias mkdir='gmkdir'
@@ -54,10 +42,33 @@ case "$OSTYPE" in
             alias diff="$(brew --prefix)/bin/diff $DIFF_OPTIONS"
         fi
     ;;
+    linux*)
+        alias ls="ls $LS_OPTIONS"
+        alias diff="diff $DIFF_OPTIONS"
+    ;;
 esac
 
-# asdf-direnv
-source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+# go
+if command -v go > /dev/null; then
+    export PATH="$(go env GOPATH)/bin:$PATH"
+fi
+
+# asdf
+ASDF_HOME=$HOME/.asdf
+if [[ -x $ASDF_HOME/bin/asdf ]]; then
+    . $ASDF_HOME/asdf.sh
+    fpath=($ASDF_HOME/completions $fpath)
+fi
+
+# go-task
+if command -v task > /dev/null; then
+    export PATH="$(go env GOPATH)/bin:$PATH"
+    COMPLETION="$(go env GOPATH)/pkg/mod/github.com/go-task/task/v3@$(task --version | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+')/completion/zsh"
+    fpath=($COMPLETION $fpath)
+fi
+
+# 補完をONにする
+autoload -Uz compinit && compinit
 
 # 普通の alias
 alias pr='poetry run'
@@ -67,4 +78,9 @@ gq() {
     local dir
     dir=$(ghq list | fzf --reverse +m --prompt 'select repository >')
     cd $(ghq root)/$dir
+}
+
+asdf-update() {
+    asdf update
+    asdf plugin-update --all
 }
