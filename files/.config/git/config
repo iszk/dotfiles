@@ -1,6 +1,6 @@
 [user]
-	name = iszk yoh
-	email = y@nemui.jp
+	useConfigOnly = true
+	# name, email は設定しないで、各リポジトリで設定するようにする
 
 [init]
 	templatedir = ~/.config/git/template
@@ -10,6 +10,8 @@
     s = status
     sw = switch
     rs = restore
+    cm = commit
+    p = "!git symbolic-ref --short HEAD | xargs git pull origin"
 
     # based on https://qiita.com/hajimeni/items/73d2155fc59e152630c4
     delete-merged-branch = "!f () {\
