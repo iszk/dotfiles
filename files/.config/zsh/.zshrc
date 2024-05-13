@@ -22,7 +22,8 @@ setopt hist_no_store
 setopt hist_expand
 setopt share_history
 # historyを保管するファイルを指定
-HISTFILE=$XDG_CACHE_HOME/zsh/hisotry
+# このファイルがないことがあるので注意
+HISTFILE=$XDG_CACHE_HOME/zsh/history
 HISTSIZE=200000
 SAVEHIST=200000
 # C-r で history をインクリメンタルサーチできるように
@@ -68,8 +69,10 @@ case "$OSTYPE" in
         (( ${+commands[gfind]} )) && alias find='gfind'
         (( ${+commands[gdirname]} )) && alias dirname='gdirname'
         (( ${+commands[gxargs]} )) && alias xargs='gxargs'
-        if [[ -x $(brew --prefix)/bin/diff ]]; then
-            alias diff="$(brew --prefix)/bin/diff $DIFF_OPTIONS"
+        if command -v brew > /dev/null; then
+            if [[ -x $(brew --prefix)/bin/diff ]]; then
+                alias diff="$(brew --prefix)/bin/diff $DIFF_OPTIONS"
+            fi
         fi
     ;;
     linux*)
@@ -118,7 +121,4 @@ gq() {
     cd $(ghq root)/$dir
 }
 
-asdf-update() {
-    asdf update
-    asdf plugin-update --all
-}
+eval "$(mise activate zsh)"
