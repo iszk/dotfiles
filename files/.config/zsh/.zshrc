@@ -26,13 +26,7 @@ setopt share_history
 HISTFILE=$XDG_CACHE_HOME/zsh/history
 HISTSIZE=200000
 SAVEHIST=200000
-# C-r で history をインクリメンタルサーチできるように
-function select-history() {
-  BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="History > ")
-  CURSOR=$#BUFFER
-}
-zle -N select-history
-bindkey '^r' select-history
+
 
 # prompt に git 周りの情報を表示するため
 autoload -Uz vcs_info
@@ -86,13 +80,6 @@ if command -v go > /dev/null; then
     export PATH="$(go env GOPATH)/bin:$PATH"
 fi
 
-# asdf
-ASDF_HOME=$HOME/.asdf
-if [[ -x $ASDF_HOME/bin/asdf ]]; then
-    . $ASDF_HOME/asdf.sh
-    fpath=($ASDF_HOME/completions $fpath)
-fi
-
 # go-task
 if command -v task > /dev/null; then
     export PATH="$(go env GOPATH)/bin:$PATH"
@@ -103,6 +90,16 @@ fi
 # direnv
 if command -v direnv > /dev/null; then
     eval "$(direnv hook zsh)"
+fi
+
+# fzf
+if command -v fzf > /dev/null; then
+    source <(fzf --zsh)
+fi
+
+# mise
+if command -v mise > /dev/null; then
+    eval "$(mise activate zsh)"
 fi
 
 # 補完をONにする
@@ -120,5 +117,3 @@ gq() {
     dir=$(ghq list | fzf --reverse +m --prompt 'select repository >')
     cd $(ghq root)/$dir
 }
-
-eval "$(mise activate zsh)"
