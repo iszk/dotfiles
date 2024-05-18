@@ -27,13 +27,13 @@ precmd_vcs_info() { vcs_info }
 precmd_functions+=( precmd_vcs_info )
 setopt prompt_subst
 zstyle ':vcs_info:git:*' check-for-changes true
-zstyle ':vcs_info:git:*' stagedstr "+"
-zstyle ':vcs_info:git:*' unstagedstr "*"
+zstyle ':vcs_info:git:*' stagedstr "*"
+zstyle ':vcs_info:git:*' unstagedstr "+"
 zstyle ':vcs_info:*' formats "%F{red}(%b%u%c)%f"
 zstyle ':vcs_info:*' actionformats '[%b|%a]'
 
 # prompt
-PROMPT='%~ '\$vcs_info_msg_0_$' %# '
+PROMPT='%B%F{blue}%n%f %~ '\$vcs_info_msg_0_$'%b%# '
 
 # 標準的なコマンドのオプション
 LS_OPTIONS="-hFv --time-style=long-iso --group-directories-first --color=auto"
@@ -54,9 +54,17 @@ if command -v direnv > /dev/null; then
 fi
 
 # fzf
-if command -v fzf > /dev/null; then
-    source <(fzf --zsh)
-fi
+# version 0.48 以降はこっち
+# if command -v fzf > /dev/null; then
+#     source <(fzf --zsh)
+# fi
+# C-r で history をインクリメンタルサーチできるように
+function select-history() {
+    BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="History > ")
+    CURSOR=$#BUFFER
+}
+zle -N select-history
+bindkey '^r' select-history
 
 # 補完をONにする
 autoload -Uz compinit && compinit
