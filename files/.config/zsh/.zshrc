@@ -40,7 +40,11 @@ zstyle ':vcs_info:*' formats "%F{red}(%b%u%c)%f"
 zstyle ':vcs_info:*' actionformats '[%b|%a]'
 
 # prompt
-PROMPT='%B%F{red}> %f%b%~ '\$vcs_info_msg_0_$'\n''%F{444}%* %n@%m%f %# '
+if [ "$REMOTE_CONTAINERS" ]; then
+    PROMPT='%F{blue}%n%f %B%F{red}>%f%b %~ '\$vcs_info_msg_0_$'%# '
+else
+    PROMPT='%B%F{red}> %f%b%~ '\$vcs_info_msg_0_$'\n''%* %F{blue}%n@%m%f %# '
+fi
 
 # 標準的なコマンドのオプション
 LS_OPTIONS="-hFv --time-style=long-iso --group-directories-first --color=auto"
