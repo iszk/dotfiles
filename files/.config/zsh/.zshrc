@@ -85,11 +85,10 @@ if command -v go > /dev/null; then
 fi
 
 # go-task
-if command -v task > /dev/null; then
-    export PATH="$(go env GOPATH)/bin:$PATH"
-    COMPLETION="$(go env GOPATH)/pkg/mod/github.com/go-task/task/v3@$(task --version | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+')/completion/zsh"
-    fpath=($COMPLETION $fpath)
-fi
+# if command -v task > /dev/null; then
+#     COMPLETION="$(go env GOPATH)/pkg/mod/github.com/go-task/task/v3@$(task --version | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+')/completion/zsh"
+#     fpath=($COMPLETION $fpath)
+# fi
 
 # direnv
 if command -v direnv > /dev/null; then
@@ -98,17 +97,16 @@ fi
 
 # fzf
 # version 0.48 以降はこっち
-# if command -v fzf > /dev/null; then
-#     source <(fzf --zsh)
-# fi
+if command -v fzf > /dev/null; then
+    source <(fzf --zsh)
+fi
 # C-r で history をインクリメンタルサーチできるように
-function select-history() {
-    BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="History > ")
-    CURSOR=$#BUFFER
-}
-zle -N select-history
-bindkey '^r' select-history
-
+# function select-history() {
+#    BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="History > ")
+#    CURSOR=$#BUFFER
+# }
+# zle -N select-history
+# bindkey '^r' select-history
 
 # mise
 if command -v mise > /dev/null; then
@@ -119,8 +117,10 @@ fi
 autoload -Uz compinit && compinit
 
 # 普通の alias
-alias pr='poetry run'
-alias pp='poetry run python'
+if command -v poetry > /dev/null; then
+    alias pr='poetry run'
+    alias pp='poetry run python'
+fi
 
 alias relogin='exec $SHELL -l'
 # シェルの再起動(source .zshrc より良い、unalias相当のこともできるので)
