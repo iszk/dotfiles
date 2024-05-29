@@ -1,4 +1,6 @@
 
+export SHELL=`which zsh`
+
 # Ctrl+Dでログアウトしてしまうことを防ぐ
 setopt IGNOREEOF
 
@@ -85,10 +87,23 @@ if command -v go > /dev/null; then
 fi
 
 # go-task
-# if command -v task > /dev/null; then
-#     COMPLETION="$(go env GOPATH)/pkg/mod/github.com/go-task/task/v3@$(task --version | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+')/completion/zsh"
-#     fpath=($COMPLETION $fpath)
-# fi
+if command -v task > /dev/null; then
+    COMPLETION=""
+    # ファイルが存在する場合、fpath に追加する
+    for f (
+        "/opt/homebrew/Cellar/go-task/3.35.1/share/zsh/site-functions/_task"
+        "/usr/local/lib/task/completion/zsh/_task"
+    ) {
+        if test -f $f; then
+            COMPLETION=$f
+            break
+        fi
+    }
+
+    if "$COMPLETION"  ""; then
+        fpath=($COMPLETION $fpath)
+    fi
+fi
 
 # direnv
 if command -v direnv > /dev/null; then
@@ -129,4 +144,12 @@ gq() {
     local dir
     dir=$(ghq list | fzf --reverse +m --prompt 'select repository >')
     cd $(ghq root)/$dir
+}
+
+task() {
+    if [ -z "$1" ]; then
+        command task --list-all | tail +2 | fzf --reverse --prompt 'task: Available tasks for this project:' | awk '{ print $2 }' | sed 's/:$//' | xargs task
+    else
+        command task "$@"
+    fi
 }
