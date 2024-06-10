@@ -1,0 +1,108 @@
+# If not running interactively, don't do anything
+[[ "$-" != *i* ]] && return
+
+export XDG_CONFIG_HOME=$HOME/.config
+export XDG_CACHE_HOME=$HOME/.cache
+export XDG_DATA_HOME=$HOME/.local/share
+export XDG_STATE_HOME=$HOME/.local/state
+
+## History
+# Make bash append rather than overwrite the history on disk
+shopt -s histappend
+# Do not the results of history substitution immediately pass to the shell parser.
+shopt -s histverify
+# multi-line commands are saved to the history with embedded newlines rather than using semicolon separators where possible.
+shopt -s lithist
+# Don't put duplicate lines or lines starting with space in the history. See
+HISTCONTROL="ignoreboth"
+# change ~/.bash_history
+HISTFILE="$XDG_STATE_HOME/bash_history"
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=10000
+HISTFILESIZE=20000
+
+function command_exists() {
+    if command -v "$1" &> /dev/null; then
+        return 0
+    fi
+    return 255
+}
+
+function file_exists {
+    if [ -e "$1" ]; then
+        return 0
+    fi
+    return 255
+}
+
+
+files=(
+    "${XDG_DATA_HOME}/git/git-prompt.sh"
+    "${XDG_DATA_HOME}/git/git-completion.bash"
+    "${XDG_DATA_HOME}/task/task.bash"
+)
+
+for file in "${files[@]}"
+do
+    # ファイルが存在するか確認
+    if file_exists "$file"; then
+        source "$file"
+    else
+        echo "File: $file does not exist."
+    fi
+done
+
+
+# 現在のブランチがupstreamより進んでいるとき">"を、遅れているとき"<"を、遅れてるけど独自の変更もあるとき"<>"を表示する
+GIT_PS1_SHOWUPSTREAM=1
+# addされてない新規ファイルがある(untracked)とき"%"を表示する
+GIT_PS1_SHOWUNTRACKEDFILES=1
+# stashになにか入っている(stashed)とき"$"を表示する
+# GIT_PS1_SHOWSTASHSTATE=1
+# addされてない変更(unstaged)があったとき"*"を表示する、addされているがcommitされていない変更(staged)があったとき"+"を表示する
+GIT_PS1_SHOWDIRTYSTATE=1
+export PS1='\u@\h \W$(__git_ps1)\$ '
+
+# 標準的なコマンドのオプション
+DIFF_OPTIONS="-u --color"
+
+case "$OSTYPE" in
+    darwin*)
+        if command -v brew > /dev/null; then
+            if [[ -x $(brew --prefix)/bin/diff ]]; then
+                alias diff="$(brew --prefix)/bin/diff $DIFF_OPTIONS"
+            fi
+        fi
+        LS_OPTIONS="-FG"
+    ;;
+    linux*)
+        LS_OPTIONS="-hFv --time-style=long-iso --group-directories-first --color=auto"
+    ;;
+esac
+
+alias ls="ls $LS_OPTIONS"
+alias diff="diff $DIFF_OPTIONS"
+alias relogin='exec $SHELL -l'
+# シェルの再起動(source .zshrc より良い、unalias相当のこともできるので)
+
+# go
+if command_exists go; then
+    export PATH="$(go env GOPATH)/bin:$PATH"
+fi
+
+# fzf version 0.48 以降
+if command_exists fzf; then
+    eval "$(fzf --bash)"
+fi
+
+# 普通の alias
+if command_exists poetry; then
+    alias pr='poetry run'
+    alias pp='poetry run python'
+fi
+
+gq() {
+    local dir
+    dir=$(ghq list | fzf --reverse +m --prompt 'select repository >')
+    cd $(ghq root)/$dir
+}
