@@ -61,7 +61,13 @@ GIT_PS1_SHOWUNTRACKEDFILES=1
 # GIT_PS1_SHOWSTASHSTATE=1
 # addされてない変更(unstaged)があったとき"*"を表示する、addされているがcommitされていない変更(staged)があったとき"+"を表示する
 GIT_PS1_SHOWDIRTYSTATE=1
-export PS1='\u@\h \W$(__git_ps1)\$ '
+
+# prompt
+if [ "$REMOTE_CONTAINERS" ]; then
+    export PS1='\[\e[34m\]\u \[\e[31m\]>\[\e[0m\] \W\[\e[31m\]$(__git_ps1)\[\e[0m\]\$ '
+else
+    export PS1='\[\e[31m\]>\[\e[0m\] \w\[\e[31m\]$(__git_ps1)\[\e[0m\]\n\t \[\e[34m\]\u@\h\[\e[0m\] \$ '
+fi
 
 # 標準的なコマンドのオプション
 DIFF_OPTIONS="-u --color"
