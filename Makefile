@@ -8,9 +8,9 @@ DOWNLOAD_FILES := "https://raw.githubusercontent.com/git/git/master/contrib/comp
 DOWNLOAD_FILES += "https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash : $(XDG_DATA_HOME)/git/git-completion.bash"
 DOWNLOAD_FILES += "https://raw.githubusercontent.com/go-task/task/main/completion/bash/task.bash : $(XDG_DATA_HOME)/task/task.bash"
 
-.PHONY: sync create_dirs link_files set_permissions setup-tools
+.PHONY: sync create_dirs link_files set_permissions
 
-sync: create_dirs link_files set_permissions
+sync: create_dirs link_files set_permissions setup-tools
 
 create_dirs:
 	cd $(FILES_DIR) && find . -mindepth 1 -type d -exec mkdir -p $(TARGET_DIR)/{} \;
