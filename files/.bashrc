@@ -63,10 +63,14 @@ GIT_PS1_SHOWUNTRACKEDFILES=1
 GIT_PS1_SHOWDIRTYSTATE=1
 
 # prompt
-if [ "$REMOTE_CONTAINERS" ]; then
-    export PS1='\[\e[34m\]\u \[\e[31m\]>\[\e[0m\] \W\[\e[31m\]$(__git_ps1)\[\e[0m\]\$ '
+if command_exists __git_ps1; then
+    if [ "$REMOTE_CONTAINERS" ]; then
+        export PS1='\[\e[34m\]\u \[\e[31m\]>\[\e[0m\] \W\[\e[31m\]$(__git_ps1)\[\e[0m\]\$ '
+    else
+        export PS1='\[\e[31m\]>\[\e[0m\] \w\[\e[31m\]$(__git_ps1)\[\e[0m\]\n\t \[\e[34m\]\u@\h\[\e[0m\] \$ '
+    fi
 else
-    export PS1='\[\e[31m\]>\[\e[0m\] \w\[\e[31m\]$(__git_ps1)\[\e[0m\]\n\t \[\e[34m\]\u@\h\[\e[0m\] \$ '
+    export PS1='\[\e[31m\]>\[\e[0m\] \w\[\e[0m\]\n\t \[\e[34m\]\u@\h\[\e[0m\] \$ '
 fi
 
 # 標準的なコマンドのオプション
