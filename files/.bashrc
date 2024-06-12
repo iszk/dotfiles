@@ -103,7 +103,7 @@ fi
 # fzf version 0.48 以降
 if command_exists fzf; then
     eval "$(fzf --bash)"
-    export FZF_DEFAULT_OPTS='--bind ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up'
+    export FZF_DEFAULT_OPTS='--bind ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up --color light'
 fi
 
 # 普通の alias
@@ -115,7 +115,9 @@ fi
 gq() {
     local dir
     dir=$(ghq list | fzf --reverse +m --prompt 'select repository >')
-    cd $(ghq root)/$dir
+    if [[ -n "$dir" ]]; then
+        cd $(ghq root)/$dir
+    fi
 }
 
 ga() {
