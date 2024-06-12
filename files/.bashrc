@@ -103,6 +103,7 @@ fi
 # fzf version 0.48 以降
 if command_exists fzf; then
     eval "$(fzf --bash)"
+    export FZF_DEFAULT_OPTS='--bind ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up'
 fi
 
 # 普通の alias
@@ -115,4 +116,14 @@ gq() {
     local dir
     dir=$(ghq list | fzf --reverse +m --prompt 'select repository >')
     cd $(ghq root)/$dir
+}
+
+ga() {
+    local selected
+    selected=$(git -c color.status=always status -s | fzf -m --ansi --preview="echo {2} | xargs git diff --color")
+    if [[ -n "$selected" ]]; then
+        selected=$(tr '\n' ' ' <<< "$selected")
+        git add $selected
+        echo "Completed: git add $selected"
+    fi
 }
