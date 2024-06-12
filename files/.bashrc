@@ -122,7 +122,8 @@ gq() {
 
 ga() {
     local selected
-    selected=$(git -c color.status=always status -s | fzf -m --ansi --preview="echo {2} | xargs git diff --color")
+    # selected=$(git -c color.status=always status -s | fzf -m --ansi --preview="echo {2} | xargs git diff --color")
+    selected=$(git  -c color.status=always status -s | fzf -m --ansi --preview="echo {2} | xargs git diff --color" | awk '{print $2}')
     if [[ -n "$selected" ]]; then
         selected=$(tr '\n' ' ' <<< "$selected")
         git add $selected
