@@ -1,6 +1,8 @@
 # If not running interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
+export SHELL=$(which bash)
+
 export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 export XDG_DATA_HOME=$HOME/.local/share
@@ -35,6 +37,8 @@ function file_exists {
     return 255
 }
 
+# Use bash-completion, if available
+[[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
 
 files=(
     "${XDG_DATA_HOME}/git/git-prompt.sh"
@@ -103,7 +107,7 @@ fi
 # fzf version 0.48 以降
 if command_exists fzf; then
     eval "$(fzf --bash)"
-    export FZF_DEFAULT_OPTS='--bind ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up --color light'
+    export FZF_DEFAULT_OPTS='--bind ctrl-space:preview-half-page-down --color light'
 fi
 
 # 普通の alias
@@ -113,20 +117,15 @@ if command_exists poetry; then
 fi
 
 gq() {
-    local dir
-    dir=$(ghq list | fzf --reverse +m --prompt 'select repository >')
-    if [[ -n "$dir" ]]; then
-        cd $(ghq root)/$dir
+    if command_exists ghq; then
+        local dir
+        dir=$(ghq list | fzf --reverse +m --prompt 'select repository >')
+        if [[ -n "$dir" ]]; then
+            cd $(ghq root)/$dir
+        fi
+    else
+        echo "ghq command not found."
     fi
 }
 
-ga() {
-    local selected
-    # selected=$(git -c color.status=always status -s | fzf -m --ansi --preview="echo {2} | xargs git diff --color")
-    selected=$(git  -c color.status=always status -s | fzf -m --ansi --preview="echo {2} | xargs git diff --color" | awk '{print $2}')
-    if [[ -n "$selected" ]]; then
-        selected=$(tr '\n' ' ' <<< "$selected")
-        git add $selected
-        echo "Completed: git add $selected"
-    fi
-}
+alias ga="git-fzf add"

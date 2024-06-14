@@ -1,0 +1,48 @@
+#!/bin/bash
+
+THIS_COMMAND=$0
+
+if ! command -v fzf &> /dev/null; then
+    echo "fzf is not installed"
+    return
+fi
+
+_add() {
+    local selected
+    # selected=$(git  -c color.status=always status -s | fzf -m --ansi --preview="echo {2} | xargs git diff --color" | awk '{print $2}')
+    selected=$(git  -c color.status=always status -s | fzf -m --ansi --preview="$THIS_COMMAND preview {1} {2}" | awk '{print $2}')
+    if [[ -n "$selected" ]]; then
+        selected=$(tr '\n' ' ' <<< "$selected")
+        git add $selected
+        echo "Completed: git add $selected"
+    fi
+}
+
+_preview() {
+    TYPE="$1"
+    FILE="$2"
+    if [ $TYPE = "M" ]; then
+        git diff --color $FILE
+    elif [ $TYPE = "??" ]; then
+        if [[ $FILE = */ ]]; then
+            echo -e '\033[1m** untracked directory **\033[0m'
+            ls -lFR --color $FILE
+        else
+            echo -e '\033[1m** untracked file **\033[0m'
+            cat $FILE
+        fi
+    fi
+}
+
+if [ $# = 0 ]; then
+    echo "Usage: $THIS_COMMAND [add|preview]"
+    echo "error"
+    exit
+fi
+
+if [ "$1" = "add" ]; then
+    _add
+    exit
+elif [ "$1" = "preview" ]; then
+    _preview $2 $3
+fi
