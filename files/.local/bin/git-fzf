@@ -9,8 +9,7 @@ fi
 
 _add() {
     local selected
-    # selected=$(git  -c color.status=always status -s | fzf -m --ansi --preview="echo {2} | xargs git diff --color" | awk '{print $2}')
-    selected=$(git  -c color.status=always status -s | fzf -m --ansi --preview="$THIS_COMMAND preview {1} {2}" | awk '{print $2}')
+    selected=$(git  -c color.status=always status -s | fzf -m --ansi --preview="$THIS_COMMAND preview_line {}" | awk '{print $2}')
     if [[ -n "$selected" ]]; then
         selected=$(tr '\n' ' ' <<< "$selected")
         git add $selected
@@ -18,12 +17,20 @@ _add() {
     fi
 }
 
-_preview() {
-    TYPE="$1"
-    FILE="$2"
-    if [ $TYPE = "M" ]; then
+_preview_line() {
+    LINE="$1"
+    SLINE=$(echo -e "$LINE" | awk '{gsub(/\033\[[0-9;]*m/, ""); print $0}')
+    TYPE=$(echo -e "$SLINE" | awk '{print substr($0, 1, 2)}')
+    FILE=$(echo -e "$SLINE" | awk '{print $2}')
+    # echo "type = [$TYPE] / file = [$FILE]"
+    if [ "$TYPE" = " M" ]; then
         git diff --color $FILE
-    elif [ $TYPE = "??" ]; then
+    elif [ "$TYPE" = "M " ]; then
+        git diff --color --cached $FILE
+    elif [ "$TYPE" = "A " ]; then
+        echo -e '\033[1m** added file **\033[0m'
+        cat $FILE
+    elif [ "$TYPE" = "??" ]; then
         if [[ $FILE = */ ]]; then
             echo -e '\033[1m** untracked directory **\033[0m'
             ls -lFR --color $FILE
@@ -43,6 +50,6 @@ fi
 if [ "$1" = "add" ]; then
     _add
     exit
-elif [ "$1" = "preview" ]; then
-    _preview $2 $3
+elif [ "$1" = "preview_line" ]; then
+    _preview_line "$2"
 fi
