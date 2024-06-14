@@ -9,7 +9,7 @@ fi
 
 _add() {
     local selected
-    selected=$(git  -c color.status=always status -s | fzf -m --ansi --preview="$THIS_COMMAND preview_line {}" | awk '{print $2}')
+    selected=$(git  -c color.status=always status -s | fzf --reverse -m --ansi --preview="$THIS_COMMAND preview_line {}" | awk '{print $2}')
     if [[ -n "$selected" ]]; then
         selected=$(tr '\n' ' ' <<< "$selected")
         git add $selected
