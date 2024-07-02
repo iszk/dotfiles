@@ -128,4 +128,8 @@ gq() {
     fi
 }
 
+# 実用的 alias
 alias ga="git-fzf add"
+
+# あまり使わないけどコマンドを忘れたときに見るための alias
+alias ssh-fingerprint="ssh-keygen -lf"
