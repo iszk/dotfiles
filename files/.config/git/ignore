@@ -12,3 +12,6 @@
 
 # temporary files
 tmp/
+
+# my extension dir
+.ext/
