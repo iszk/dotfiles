@@ -9,7 +9,7 @@ fi
 
 _add() {
     local selected
-    selected=$(git  -c color.status=always status -s | fzf --reverse -m --ansi --preview-window=right,65%,wrap --preview="$THIS_COMMAND preview_line {}" | awk '{print $2}')
+    selected=$(git  -c color.status=always status -s | fzf --reverse -m --ansi --preview-window=right,65%,wrap --preview="$THIS_COMMAND add_preview_line {}" | awk '{print $2}')
     if [[ -n "$selected" ]]; then
         selected=$(tr '\n' ' ' <<< "$selected")
         git add $selected
@@ -17,7 +17,7 @@ _add() {
     fi
 }
 
-_preview_line() {
+_add_preview_line() {
     LINE="$1"
     SLINE=$(echo -e "$LINE" | awk '{gsub(/\033\[[0-9;]*m/, ""); print $0}')
     TYPE=$(echo -e "$SLINE" | awk '{print substr($0, 1, 2)}')
@@ -43,8 +43,15 @@ _preview_line() {
     fi
 }
 
+_switch() {
+    selected=$(git branch --format '%(committerdate:short)  %(align:width=22)%(refname:short)%(end) %(contents:subject)' --sort=-committerdate | fzf --prompt='switch branch > ' --header='lastcommit  branch name            comment' --reverse --ansi --preview-window=right,65%,wrap --preview="git log --color --first-parent --graph --abbrev-commit --decorate {2}"| awk '{print $2}')
+    if [[ -n "$selected" ]]; then
+        git switch "$selected"
+    fi
+}
+
 if [ $# = 0 ]; then
-    echo "Usage: $THIS_COMMAND [add|preview]"
+    echo "Usage: $THIS_COMMAND [add|switch]"
     echo "error"
     exit
 fi
@@ -52,6 +59,9 @@ fi
 if [ "$1" = "add" ]; then
     _add
     exit
-elif [ "$1" = "preview_line" ]; then
-    _preview_line "$2"
+elif [ "$1" = "add_preview_line" ]; then
+    _add_preview_line "$2"
+elif [ "$1" = "switch" ]; then
+    _switch
+    exit
 fi
