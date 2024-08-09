@@ -27,6 +27,9 @@ _add_preview_line() {
         git diff --color $FILE
     elif [ "$TYPE" = "M " ]; then
         git diff --color --cached $FILE
+    elif [ "$TYPE" = "MM" ]; then
+        git diff --color --cached $FILE
+        git diff --color $FILE
     elif [ "$TYPE" = "A " ]; then
         echo -e '\033[1m** added file **\033[0m'
         cat $FILE
