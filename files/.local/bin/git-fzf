@@ -35,6 +35,11 @@ _add_preview_line() {
         cat $FILE
     elif [ "$TYPE" = " D" ]; then
         git diff --color HEAD -- $FILE
+    elif [ "$TYPE" = "R " ]; then
+        # R と RM に関しては、表示したい内容が取れるわけではなさそうなのでどこかで直したい
+        git diff --color --cached --find-renames
+    elif [ "$TYPE" = "RM" ]; then
+        git diff --color --cached --find-renames
     elif [ "$TYPE" = "??" ]; then
         if [[ $FILE = */ ]]; then
             echo -e '\033[1m** untracked directory **\033[0m'
