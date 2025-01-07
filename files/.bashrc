@@ -110,6 +110,11 @@ if command_exists fzf; then
     export FZF_DEFAULT_OPTS='--bind ctrl-space:preview-half-page-down --color light'
 fi
 
+# direnv
+if command_exists direnv; then
+    eval "$(direnv hook bash)"
+fi
+
 # 普通の alias
 if command_exists poetry; then
     alias pr='poetry run'
