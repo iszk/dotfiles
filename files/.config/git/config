@@ -5,6 +5,9 @@
 [init]
 	templatedir = ~/.config/git/template
 
+[push]
+    autoSetupRemote = true
+
 [alias]
     m = "!git branch | grep main; if [ $? -eq 0 ]; then git switch main; else git switch master; fi; git pull"
     s = status
@@ -18,18 +21,6 @@
         git branch --merged | egrep -v '\\*|develop|master|main' | xargs git branch -d;\
     };f"
 
-    # co = checkout
-    # checkout peco selectable
-    # based on http://qiita.com/yamagen0915/items/eb8275275fc87935843b
-    co = "!f () {\
-        if [ $# -ge 1 ]; then\
-            git switch ${@};\
-        elif type 'fzf' > /dev/null 2>&1; then\
-            git branch --sort=authordate | fzf --prompt 'switch\\> ' | tr -d ' \\*' | xargs -n 1 git switch;\
-        elif type 'peco' > /dev/null 2>&1; then\
-            git branch --sort=authordate | peco --prompt 'switch\\> ' | tr -d ' \\*' | xargs -n 1 git switch;\
-        fi;\
-    };f"
     sw = "!f () {\
         if [ $# -ge 1 ]; then\
             git switch ${@};\
