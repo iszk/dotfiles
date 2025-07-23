@@ -1,5 +1,10 @@
+# 必要なディレクトリを作成
+[[ ! -d "$XDG_STATE_HOME/zsh" ]] && mkdir -p "$XDG_STATE_HOME/zsh"
+[[ ! -d "$XDG_CACHE_HOME/zsh" ]] && mkdir -p "$XDG_CACHE_HOME/zsh"
 
-export SHELL=`which zsh`
+# 補完システムの初期化（XDG準拠）
+autoload -Uz compinit
+compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
 
 # Ctrl+Dでログアウトしてしまうことを防ぐ
 setopt IGNOREEOF
@@ -24,11 +29,9 @@ setopt hist_no_store
 setopt hist_expand
 setopt share_history
 # historyを保管するファイルを指定
-# このファイルがないことがあるので注意
 HISTFILE=$XDG_CACHE_HOME/zsh/history
 HISTSIZE=200000
 SAVEHIST=200000
-
 
 # prompt に git 周りの情報を表示するため
 autoload -Uz vcs_info
@@ -88,21 +91,17 @@ fi
 
 # go-task
 if command -v task > /dev/null; then
-    COMPLETION=""
-    # ファイルが存在する場合、fpath に追加する
-    for f (
+    local completion_paths=(
         "/opt/homebrew/Cellar/go-task/3.35.1/share/zsh/site-functions/_task"
         "/usr/local/lib/task/completion/zsh/_task"
-    ) {
-        if test -f $f; then
-            COMPLETION=$f
+    )
+
+    for path in $completion_paths; do
+        if [[ -f "$path" ]]; then
+            fpath=("$path" $fpath)
             break
         fi
-    }
-
-    if "$COMPLETION"  ""; then
-        fpath=($COMPLETION $fpath)
-    fi
+    done
 fi
 
 # direnv
@@ -111,25 +110,14 @@ if command -v direnv > /dev/null; then
 fi
 
 # fzf
-# version 0.48 以降はこっち
 if command -v fzf > /dev/null; then
     source <(fzf --zsh)
 fi
-# C-r で history をインクリメンタルサーチできるように
-# function select-history() {
-#    BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="History > ")
-#    CURSOR=$#BUFFER
-# }
-# zle -N select-history
-# bindkey '^r' select-history
 
 # mise
 if command -v mise > /dev/null; then
     eval "$(mise activate zsh)"
 fi
-
-# 補完をONにする
-autoload -Uz compinit && compinit
 
 # 普通の alias
 if command -v poetry > /dev/null; then
@@ -142,13 +130,15 @@ alias relogin='exec $SHELL -l'
 
 gq() {
     local dir
-    dir=$(ghq list | fzf --reverse +m --prompt 'select repository >')
-    cd $(ghq root)/$dir
+    dir=$(ghq list | fzf --reverse +m --prompt 'select repository >') || return
+    [[ -n "$dir" ]] && cd "$(ghq root)/$dir"
 }
 
 task() {
-    if [ -z "$1" ]; then
-        command task --list-all | tail +2 | fzf --reverse --prompt 'task: Available tasks for this project:' | awk '{ print $2 }' | sed 's/:$//' | xargs task
+    if [[ $# -eq 0 ]]; then
+        local selected_task
+        selected_task=$(command task --list-all | tail -n +2 | fzf --reverse --prompt 'task: Available tasks for this project:' | awk '{print $2}' | sed 's/:$//')
+        [[ -n "$selected_task" ]] && command task "$selected_task"
     else
         command task "$@"
     fi
