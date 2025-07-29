@@ -96,9 +96,9 @@ if command -v task > /dev/null; then
         "/usr/local/lib/task/completion/zsh/_task"
     )
 
-    for path in $completion_paths; do
-        if [[ -f "$path" ]]; then
-            fpath=("$path" $fpath)
+    for p in $completion_paths; do
+        if [[ -f "$p" ]]; then
+            fpath=("$p" $fpath)
             break
         fi
     done
