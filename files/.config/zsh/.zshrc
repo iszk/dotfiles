@@ -125,8 +125,10 @@ if command -v poetry > /dev/null; then
     alias pp='poetry run python'
 fi
 
-alias relogin='exec $SHELL -l'
 # シェルの再起動(source .zshrc より良い、unalias相当のこともできるので)
+alias relogin='exec $SHELL -l'
+
+alias ga='git-fzf add'
 
 gq() {
     local dir
@@ -143,3 +145,5 @@ task() {
         command task "$@"
     fi
 }
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
