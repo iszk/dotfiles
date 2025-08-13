@@ -12,4 +12,8 @@ if [ "$REMOTE_CONTAINERS" == "true" ]; then
             ln -s $EXTOOLS_SOURCE_DIR $EXTOOLS_TARGET_DIR
         fi
     fi
+
+    make install-tools
+    make fix-git-remote-url
+
 fi
