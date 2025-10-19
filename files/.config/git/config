@@ -15,18 +15,22 @@
     rs = restore
     cm = commit
     p = "!git symbolic-ref --short HEAD | xargs git pull origin"
+    g = "!git grep --break --heading --line-number --color=always -i"
 
     # based on https://qiita.com/hajimeni/items/73d2155fc59e152630c4
     delete-merged-branch = "!f () {\
         git branch --merged | egrep -v '\\*|develop|master|main' | xargs git branch -d;\
     };f"
 
+    # switch fzf selectable
     sw = "!f () {\
         if [ $# -ge 1 ]; then\
             git switch ${@};\
         elif type 'fzf' > /dev/null 2>&1; then\
             git branch --sort=authordate | fzf --prompt 'switch\\> ' | tr -d ' \\*' | xargs -n 1 git switch;\
-        elif type 'peco' > /dev/null 2>&1; then\
-            git branch --sort=authordate | peco --prompt 'switch\\> ' | tr -d ' \\*' | xargs -n 1 git switch;\
         fi;\
     };f"
+
+[grep]
+	lineNumber = true
+	patternType = extended
