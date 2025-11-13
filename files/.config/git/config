@@ -1,6 +1,7 @@
 [user]
-	useConfigOnly = true
-	# name, email は設定しないで、各リポジトリで設定するようにする
+    useConfigOnly = true
+    # name, email は設定しないで、各リポジトリで設定するようにする
+    # 別途、 github.com/iszk/ 以下のリポジトリでは ~/.config/git/config-personal を読み込むようにしてある
 
 [init]
 	templatedir = ~/.config/git/template
@@ -34,3 +35,6 @@
 [grep]
 	lineNumber = true
 	patternType = extended
+
+[includeIf "gitdir:~/ghq/github.com/iszk/"]
+    path = ~/.config/git/config-personal
