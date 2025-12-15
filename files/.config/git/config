@@ -1,5 +1,5 @@
 [user]
-	useConfigOnly = true
+	# useConfigOnly = true
 	# name, email は設定しないで、各リポジトリで設定するようにする
 
 [init]
@@ -34,3 +34,7 @@
 [grep]
 	lineNumber = true
 	patternType = extended
+
+# [includeIf "hasconfig:remote.*.url:*github.com:iszk/*"]
+[includeIf "hasconfig:remote.*.url:git@github.com:iszk/**"]
+    path = ~/.config/git/config-personal
