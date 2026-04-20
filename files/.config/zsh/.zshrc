@@ -7,7 +7,7 @@ autoload -Uz compinit
 compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
 
 # Ctrl+Dでログアウトしてしまうことを防ぐ
-setopt IGNOREEOF
+# setopt IGNOREEOF
 
 ## 個人のスクリプトは XDG 的に ~/.local/bin/ に入れる
 export PATH=$PATH:$HOME/.local/bin
@@ -129,6 +129,9 @@ fi
 alias relogin='exec $SHELL -l'
 
 alias ga='git-fzf add'
+
+alias lg='lazygit'
+alias ld='lazydocker'
 
 gq() {
     local dir
