@@ -1,19 +1,21 @@
 #!/bin/bash
 
-make sync
+THIS_DIR="$(cd "$(dirname "$0")" && pwd)"
+FILES_DIR="$THIS_DIR/files"
+TARGET_DIR="$HOME"
 
-if [ "$REMOTE_CONTAINERS" == "true" ]; then
-    echo "Running in a devcontainer. Executing devcontainer-specific commands."
-    echo "EXTOOLS_SOURCE_DIR = $EXTOOLS_SOURCE_DIR"
-    echo "EXTOOLS_TARGET_DIR = $EXTOOLS_TARGET_DIR"
-    if [ -n "${EXTOOLS_SOURCE_DIR}" ]; then
-        /bin/bash $EXTOOLS_SOURCE_DIR/install.sh
-        if [ -n "${EXTOOLS_TARGET_DIR}" ]; then
-            ln -s $EXTOOLS_SOURCE_DIR $EXTOOLS_TARGET_DIR
-        fi
-    fi
+create_dirs() {
+    cd "$FILES_DIR" && find . -mindepth 1 -type d -exec mkdir -p "$TARGET_DIR/{}" \;
+}
 
-    make install-tools
-    make fix-git-remote-url
+link_files() {
+    cd "$FILES_DIR" && find . -mindepth 1 -type f -exec ln -snfv "$FILES_DIR/{}" "$TARGET_DIR/{}" \;
+}
 
-fi
+set_permissions() {
+    chmod -R go-rwx "$TARGET_DIR/.ssh"
+}
+
+create_dirs
+link_files
+set_permissions
