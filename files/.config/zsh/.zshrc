@@ -119,11 +119,12 @@ if command -v mise > /dev/null; then
     eval "$(mise activate zsh)"
 fi
 
-# 普通の alias
+# python
 if command -v poetry > /dev/null; then
-    alias pr='poetry run'
-    alias pp='poetry run python'
+    alias pr='uv run'
+    alias pp='uv run python'
 fi
+export PYTHONPYCACHEPREFIX="$XDG_CACHE_HOME/pycache"
 
 # シェルの再起動(source .zshrc より良い、unalias相当のこともできるので)
 alias relogin='exec $SHELL -l'
@@ -139,14 +140,7 @@ gq() {
     [[ -n "$dir" ]] && cd "$(ghq root)/$dir"
 }
 
-task() {
-    if [[ $# -eq 0 ]]; then
-        local selected_task
-        selected_task=$(command task --list-all | tail -n +2 | fzf --reverse --prompt 'task: Available tasks for this project:' | awk '{print $2}' | sed 's/:$//')
-        [[ -n "$selected_task" ]] && command task "$selected_task"
-    else
-        command task "$@"
-    fi
-}
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# .alias ファイルがあれば読み込む
+if [[ -f "$HOME/.aliases" ]]; then
+    source "$HOME/.aliases"
+fi

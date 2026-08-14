@@ -13,5 +13,15 @@
 # temporary files
 tmp/
 
-# my extension dir
-.ext/
+# python
+.venv
+
+# js
+node_modules
+
+# local environment
+mise.local.toml
+.env
+
+# docker
+compose.override.yml

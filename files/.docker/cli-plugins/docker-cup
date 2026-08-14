@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ "$1" = "docker-cli-plugin-metadata" ]; then
+    echo '{"SchemaVersion":"0.1.0","Vendor":"MyEnv","Version":"1.0.0","ShortDescription":"run docker compose up with --force-recreate"}'
+    exit 0
+fi
+
+
+service="${2:-}"
+
+docker compose pull $service
+docker compose up $service -d --force-recreate
+docker compose logs $service -f

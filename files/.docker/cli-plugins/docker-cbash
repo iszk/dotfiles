@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ "${1:-}" = "docker-cli-plugin-metadata" ]; then
+    echo '{"SchemaVersion":"0.1.0","Vendor":"MyEnv","Version":"1.0.0","ShortDescription":"run bash in a compose service"}'
+    exit 0
+fi
+
+first_compose_service() {
+    local compose_file
+    local service
+
+    for compose_file in compose.yml compose.yaml docker-compose.yml docker-compose.yaml; do
+        [ -f "$compose_file" ] || continue
+
+        service="$(
+            awk '
+                /^[[:space:]]*($|#)/ { next }
+                /^services:[[:space:]]*($|#)/ { in_services = 1; next }
+                in_services && /^[^[:space:]][^:]*:/ { exit }
+                in_services && /^[[:space:]]+[^[:space:]#][^:]*:[[:space:]]*($|#)/ {
+                    sub(/^[[:space:]]+/, "")
+                    sub(/:.*/, "")
+                    print
+                    exit
+                }
+            ' "$compose_file"
+        )"
+
+        if [ -n "$service" ]; then
+            echo "$service"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+service="${2:-}"
+
+if [ -z "$service" ]; then
+    service="$(first_compose_service || true)"
+fi
+
+if [ -z "$service" ]; then
+    echo "docker cbash: no compose services found" >&2
+    exit 1
+fi
+
+docker compose exec -it "$service" bash
+exit 0

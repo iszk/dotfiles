@@ -1,0 +1,1 @@
+alias rand_hex='openssl rand -hex 32'

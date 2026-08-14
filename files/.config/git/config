@@ -5,6 +5,7 @@
 
 [init]
 	templatedir = ~/.config/git/template
+	defaultBranch = main
 
 [push]
     autoSetupRemote = true
